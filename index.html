@@ -1,309 +1,39 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="color-scheme" content="light dark">
-  <title>QR and Barcode Scanner</title>
-  <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-  <style>
-    :root {
-      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-      color: #eaf0fa;
-      background: #0d1420;
-      --panel: #172131;
-      --panel-2: #202c3f;
-      --border: #34445d;
-      --muted: #b5c0d1;
-      --primary: #4d93ff;
-      --primary-hover: #72aaff;
-      --success-bg: #163a28;
-      --success-fg: #baf3cc;
-      --error-bg: #482326;
-      --error-fg: #ffd0d0;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      min-height: 100svh;
-      margin: 0;
-      display: grid;
-      place-items: center;
-      padding: clamp(12px, 4vw, 28px);
-    }
-
-    main {
-      width: min(100%, 760px);
-      padding: clamp(20px, 5vw, 38px);
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      box-shadow: 0 18px 50px rgba(0,0,0,.35);
-    }
-
-    h1 { margin: 0 0 8px; font-size: clamp(1.65rem, 5vw, 2.3rem); text-align: center; }
-    h2 { margin: 28px 0 12px; font-size: 1.15rem; }
-    .intro { margin: 0 0 22px; color: var(--muted); text-align: center; }
-
-    button {
-      width: 100%; min-height: 50px; border: 0; border-radius: 12px;
-      padding: 12px 18px; background: var(--primary); color: #07111f;
-      font: inherit; font-weight: 800; cursor: pointer;
-    }
-    button:hover { background: var(--primary-hover); }
-    button:focus-visible, input:focus-visible { outline: 3px solid #9bc2ff; outline-offset: 3px; }
-    button:disabled { opacity: .65; cursor: wait; }
-
-    .toggle-row {
-      display: flex; align-items: center; justify-content: space-between; gap: 16px;
-      margin-bottom: 16px; padding: 12px 14px; background: var(--panel-2);
-      border: 1px solid var(--border); border-radius: 12px;
-    }
-    .toggle-copy { min-width: 0; }
-    .toggle-copy strong { display: block; }
-    .toggle-copy small { display: block; margin-top: 3px; color: var(--muted); }
-    .switch { position: relative; flex: 0 0 auto; width: 48px; height: 28px; }
-    .switch input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-    .slider { position: absolute; inset: 0; border-radius: 999px; background: #647086; cursor: pointer; transition: .2s; }
-    .slider::before { content: ""; position: absolute; width: 20px; height: 20px; left: 4px; top: 4px; border-radius: 50%; background: white; transition: .2s; }
-    .switch input:checked + .slider { background: var(--primary); }
-    .switch input:checked + .slider::before { transform: translateX(20px); }
-
-    #reader { margin-top: 20px; overflow: hidden; border-radius: 14px; background: #05080d; }
-    #reader video { border-radius: 14px; }
-
-    .result { margin-top: 20px; padding: 16px; border-radius: 12px; background: var(--panel-2); overflow-wrap: anywhere; }
-    .result strong { display: block; margin-bottom: 7px; }
-    .success { background: var(--success-bg); color: var(--success-fg); }
-    .error { background: var(--error-bg); color: var(--error-fg); }
-    .result-row { display: grid; grid-template-columns: 7rem 1fr; gap: 8px; margin-top: 6px; }
-
-    #snapshot-wrap { margin-top: 18px; }
-    #snapshot-wrap[hidden] { display: none; }
-    #snapshot { display: block; width: 100%; max-height: 420px; object-fit: contain; border: 1px solid var(--border); border-radius: 14px; background: #05080d; }
-    .caption { margin: 7px 2px 0; color: var(--muted); font-size: .9rem; }
-
-    .history { display: grid; gap: 10px; padding: 0; margin: 0; list-style: none; }
-    .history li { padding: 13px 14px; background: var(--panel-2); border: 1px solid var(--border); border-radius: 12px; }
-    .history-data { font-weight: 750; overflow-wrap: anywhere; }
-    .history-meta { margin-top: 5px; color: var(--muted); font-size: .88rem; }
-    .empty { color: var(--muted); font-style: italic; }
-
-    @media (max-width: 480px) {
-      .result-row { grid-template-columns: 1fr; gap: 2px; }
-      .toggle-row { align-items: flex-start; }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>QR and Barcode Scanner</title>
+<script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<style>
+:root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#edf3ff;background:#0d1420;--panel:#172131;--panel2:#202c3f;--border:#34445d;--muted:#b5c0d1;--blue:#62a0ff;--green:#163a28;--greenText:#baf3cc;--red:#482326;--redText:#ffd0d0}*{box-sizing:border-box}body{min-height:100svh;margin:0;display:grid;place-items:center;padding:clamp(12px,4vw,28px)}main{width:min(100%,760px);padding:clamp(20px,5vw,38px);background:var(--panel);border:1px solid var(--border);border-radius:22px;box-shadow:0 18px 50px #0006}h1{margin:0 0 8px;text-align:center;font-size:clamp(1.65rem,5vw,2.3rem)}h2{margin:28px 0 12px;font-size:1.15rem}.intro{text-align:center;color:var(--muted);margin:0 0 22px}button{width:100%;min-height:50px;border:0;border-radius:12px;padding:12px 18px;background:var(--blue);color:#07111f;font:inherit;font-weight:800;cursor:pointer}button:disabled{opacity:.65}.toggle{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px;padding:12px 14px;background:var(--panel2);border:1px solid var(--border);border-radius:12px}.toggle small{display:block;color:var(--muted);margin-top:3px}.switch{position:relative;flex:0 0 48px;width:48px;height:28px}.switch input{position:absolute;opacity:0}.slider{position:absolute;inset:0;border-radius:99px;background:#647086}.slider:before{content:"";position:absolute;width:20px;height:20px;left:4px;top:4px;border-radius:50%;background:white;transition:.2s}.switch input:checked+.slider{background:var(--blue)}.switch input:checked+.slider:before{transform:translateX(20px)}#reader{margin-top:20px;overflow:hidden;border-radius:14px;background:#05080d}.result{margin-top:20px;padding:16px;border-radius:12px;background:var(--panel2);overflow-wrap:anywhere}.result strong{display:block;margin-bottom:7px}.success{background:var(--green);color:var(--greenText)}.error{background:var(--red);color:var(--redText)}.row{display:grid;grid-template-columns:7rem 1fr;gap:8px;margin-top:6px}#snapshotWrap[hidden]{display:none}#snapshot{display:block;width:100%;max-height:420px;object-fit:contain;border:1px solid var(--border);border-radius:14px;background:#05080d}.caption,.meta{color:var(--muted);font-size:.9rem}.history{display:grid;gap:10px;padding:0;margin:0;list-style:none}.history li{padding:13px 14px;background:var(--panel2);border:1px solid var(--border);border-radius:12px}.data{font-weight:750;overflow-wrap:anywhere}.meta{margin-top:5px}.empty{color:var(--muted);font-style:italic}@media(max-width:480px){.row{grid-template-columns:1fr;gap:2px}.toggle{align-items:flex-start}}
+</style>
 </head>
-<body>
-  <main>
-    <h1>QR and Barcode Scanner</h1>
-    <p class="intro">Read QR codes and common barcodes with the camera.</p>
-
-    <div class="toggle-row">
-      <div class="toggle-copy">
-        <strong>Keep last successful image</strong>
-        <small>Show the camera frame captured when a code is read.</small>
-      </div>
-      <label class="switch" aria-label="Keep last successful image">
-        <input id="keep-image" type="checkbox">
-        <span class="slider"></span>
-      </label>
-    </div>
-
-    <button id="action" type="button">Read Code</button>
-    <div id="reader"></div>
-    <div id="result" class="result" role="status" aria-live="polite">Camera has not been started.</div>
-
-    <section id="snapshot-wrap" hidden>
-      <h2>Last successful image</h2>
-      <img id="snapshot" alt="Camera frame from the latest successful scan">
-      <p id="snapshot-time" class="caption"></p>
-    </section>
-
-    <section aria-labelledby="history-title">
-      <h2 id="history-title">History</h2>
-      <ol id="history" class="history"><li class="empty">No successful reads yet.</li></ol>
-    </section>
-  </main>
-
-  <script>
-    const button = document.querySelector('#action');
-    const output = document.querySelector('#result');
-    const keepImage = document.querySelector('#keep-image');
-    const snapshotWrap = document.querySelector('#snapshot-wrap');
-    const snapshot = document.querySelector('#snapshot');
-    const snapshotTime = document.querySelector('#snapshot-time');
-    const historyList = document.querySelector('#history');
-
-    let scanner = null;
-    let running = false;
-    let locked = false;
-    const history = [];
-    const supportedFormats = [
-      'QR_CODE', 'EAN_13', 'EAN_8', 'UPC_A', 'UPC_E', 'CODE_128',
-      'CODE_39', 'CODE_93', 'CODABAR', 'ITF', 'DATA_MATRIX', 'PDF_417', 'AZTEC'
-    ];
-
-    function escapeHtml(value) {
-      const element = document.createElement('div');
-      element.textContent = String(value);
-      return element.innerHTML;
-    }
-
-    function showMessage(html, type = '') {
-      output.className = ('result ' + type).trim();
-      output.innerHTML = html;
-    }
-
-    function renderHistory() {
-      historyList.replaceChildren();
-      if (!history.length) {
-        const empty = document.createElement('li');
-        empty.className = 'empty';
-        empty.textContent = 'No successful reads yet.';
-        historyList.append(empty);
-        return;
-      }
-
-      history.forEach(item => {
-        const li = document.createElement('li');
-        const data = document.createElement('div');
-        const meta = document.createElement('div');
-        data.className = 'history-data';
-        meta.className = 'history-meta';
-        data.textContent = item.data;
-        meta.textContent = item.type + ' · ' + item.timestamp;
-        li.append(data, meta);
-        historyList.append(li);
-      });
-    }
-
-    function captureCurrentFrame(timestamp) {
-      if (!keepImage.checked) {
-        snapshotWrap.hidden = true;
-        snapshot.removeAttribute('src');
-        return;
-      }
-      const video = document.querySelector('#reader video');
-      if (!video || !video.videoWidth || !video.videoHeight) return;
-      const canvas = document.createElement('canvas');
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-      snapshot.src = canvas.toDataURL('image/jpeg', 0.86);
-      snapshotTime.textContent = 'Captured ' + timestamp;
-      snapshotWrap.hidden = false;
-    }
-
-    async function stopScanner() {
-      if (!scanner || !running) return;
-      running = false;
-      try {
-        await scanner.stop();
-        await scanner.clear();
-      } catch (error) {
-        console.warn('Scanner stop failed:', error);
-      }
-      button.disabled = false;
-      button.textContent = 'Read Code';
-    }
-
-    async function startScanner() {
-      if (!window.isSecureContext) {
-        showMessage('<strong>Secure connection required</strong>Use HTTPS or localhost.', 'error');
-        return;
-      }
-      if (typeof Html5Qrcode === 'undefined') {
-        showMessage('<strong>Scanner unavailable</strong>The scanner library could not be loaded.', 'error');
-        return;
-      }
-
-      button.disabled = true;
-      button.textContent = 'Starting camera...';
-      locked = false;
-
-      const formats = supportedFormats
-        .map(name => Html5QrcodeSupportedFormats[name])
-        .filter(Number.isInteger);
-
-      scanner = new Html5Qrcode('reader', {
-        formatsToSupport: formats,
-        useBarCodeDetectorIfSupported: true,
-        verbose: false
-      });
-
-      try {
-        await scanner.start(
-          { facingMode: 'environment' },
-          {
-            fps: 10,
-            qrbox: (width, height) => ({
-              width: Math.min(width * 0.82, 440),
-              height: Math.min(height * 0.48, 230)
-            }),
-            aspectRatio: 1.333
-          },
-          async (decodedText, decodedResult) => {
-            if (locked) return;
-            locked = true;
-
-            const now = new Date();
-            const timestamp = new Intl.DateTimeFormat(undefined, {
-              dateStyle: 'medium', timeStyle: 'medium'
-            }).format(now);
-            const type = decodedResult?.result?.format?.formatName || 'Unknown';
-
-            captureCurrentFrame(timestamp);
-            history.unshift({ data: decodedText, type, timestamp });
-            if (history.length > 5) history.pop();
-            renderHistory();
-
-            await stopScanner();
-            showMessage(
-              '<strong>Code read successfully</strong>' +
-              '<div class="result-row"><b>Data</b><span>' + escapeHtml(decodedText) + '</span></div>' +
-              '<div class="result-row"><b>Type</b><span>' + escapeHtml(type) + '</span></div>' +
-              '<div class="result-row"><b>Read at</b><time>' + escapeHtml(timestamp) + '</time></div>',
-              'success'
-            );
-            locked = false;
-          },
-          () => {}
-        );
-
-        running = true;
-        button.disabled = false;
-        button.textContent = 'Stop camera';
-        showMessage('<strong>Camera is active</strong>Keep the entire code inside the scanning area.');
-      } catch (error) {
-        button.disabled = false;
-        button.textContent = 'Read Code';
-        showMessage('<strong>Camera could not be started</strong>Check camera permission, HTTPS and whether another application is using the camera.', 'error');
-        console.error(error);
-      }
-    }
-
-    keepImage.addEventListener('change', () => {
-      if (!keepImage.checked) {
-        snapshotWrap.hidden = true;
-        snapshot.removeAttribute('src');
-      }
-    });
-
-    button.addEventListener('click', async () => {
-      if (running) {
-        await stopScanner();
-        showMessage('<strong>Camera stopped</strong>Press Read Code to try again.');
-      } else {
-        await startScanner();
-      }
-    });
-
-    window.addEventListener('pagehide', () => {
-      if (running) stopScanner();
-    });
-  </script>
-</body>
-</html>
+<body><main>
+<h1>QR and Barcode Scanner</h1><p class="intro">Read QR codes and common barcodes with the camera.</p>
+<div class="toggle"><div><strong>Keep last successful image</strong><small>Show the frame captured when a code is read.</small></div><label class="switch"><input id="keepImage" type="checkbox"><span class="slider"></span></label></div>
+<button id="action" type="button">Read Code</button><div id="reader"></div>
+<div id="result" class="result" role="status" aria-live="polite">Camera has not been started.</div>
+<section id="snapshotWrap" hidden><h2>Last successful image</h2><img id="snapshot" alt="Latest successful scan frame"><p id="snapshotTime" class="caption"></p></section>
+<section><h2>History</h2><ol id="history" class="history"></ol></section>
+</main>
+<script>
+const STORAGE_KEY='qr-barcode-history-v2';
+const button=document.querySelector('#action'),output=document.querySelector('#result'),keepImage=document.querySelector('#keepImage'),snapshotWrap=document.querySelector('#snapshotWrap'),snapshot=document.querySelector('#snapshot'),snapshotTime=document.querySelector('#snapshotTime'),historyList=document.querySelector('#history');
+let scanner=null,running=false,locked=false;
+let history=loadHistory();
+const formatNames=['QR_CODE','EAN_13','EAN_8','UPC_A','UPC_E','CODE_128','CODE_39','CODE_93','CODABAR','ITF','DATA_MATRIX','PDF_417','AZTEC'];
+function loadHistory(){try{const value=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');return Array.isArray(value)?value.slice(0,5):[]}catch{return[]}}
+function saveHistory(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(history))}catch(error){console.warn('History storage unavailable',error)}}
+function addHistory(data,type,iso,timestamp){history.unshift({data:String(data),type:String(type),iso,timestamp});history=history.slice(0,5);saveHistory();renderHistory()}
+function renderHistory(){historyList.replaceChildren();if(!history.length){const li=document.createElement('li');li.className='empty';li.textContent='No successful reads yet.';historyList.append(li);return}for(const item of history){const li=document.createElement('li'),data=document.createElement('div'),meta=document.createElement('div'),time=document.createElement('time');data.className='data';meta.className='meta';data.textContent=item.data;time.dateTime=item.iso||'';time.textContent=item.timestamp;meta.append(document.createTextNode(item.type+' · '),time);li.append(data,meta);historyList.append(li)}}
+function esc(value){const el=document.createElement('div');el.textContent=String(value);return el.innerHTML}
+function message(html,type=''){output.className=('result '+type).trim();output.innerHTML=html}
+function capture(timestamp){if(!keepImage.checked){snapshotWrap.hidden=true;snapshot.removeAttribute('src');return}const video=document.querySelector('#reader video');if(!video?.videoWidth)return;try{const canvas=document.createElement('canvas');canvas.width=video.videoWidth;canvas.height=video.videoHeight;canvas.getContext('2d').drawImage(video,0,0);snapshot.src=canvas.toDataURL('image/jpeg',.85);snapshotTime.textContent='Captured '+timestamp;snapshotWrap.hidden=false}catch(error){console.warn('Image capture failed',error)}}
+async function stop(){if(!scanner||!running)return;running=false;try{await scanner.stop();await scanner.clear()}catch(error){console.warn(error)}button.disabled=false;button.textContent='Read Code'}
+async function start(){if(!window.isSecureContext){message('<strong>Secure connection required</strong>Use HTTPS or localhost.','error');return}if(typeof Html5Qrcode==='undefined'){message('<strong>Scanner unavailable</strong>The scanner library could not be loaded.','error');return}button.disabled=true;button.textContent='Starting camera...';locked=false;const formats=formatNames.map(name=>Html5QrcodeSupportedFormats[name]).filter(Number.isInteger);scanner=new Html5Qrcode('reader',{formatsToSupport:formats,useBarCodeDetectorIfSupported:true,verbose:false});try{await scanner.start({facingMode:'environment'},{fps:10,qrbox:(w,h)=>({width:Math.min(w*.82,440),height:Math.min(h*.48,230)}),aspectRatio:1.333},async(text,result)=>{if(locked)return;locked=true;const now=new Date(),timestamp=new Intl.DateTimeFormat(undefined,{dateStyle:'medium',timeStyle:'medium'}).format(now),type=result?.result?.format?.formatName||'Unknown';
+// Store and render first. Image capture or camera shutdown cannot prevent history update.
+addHistory(text,type,now.toISOString(),timestamp);capture(timestamp);await stop();message('<strong>Code read successfully</strong><div class="row"><b>Data</b><span>'+esc(text)+'</span></div><div class="row"><b>Type</b><span>'+esc(type)+'</span></div><div class="row"><b>Read at</b><time datetime="'+now.toISOString()+'">'+esc(timestamp)+'</time></div>','success');locked=false},()=>{});running=true;button.disabled=false;button.textContent='Stop camera';message('<strong>Camera is active</strong>Keep the entire code inside the scanning area.')}catch(error){button.disabled=false;button.textContent='Read Code';message('<strong>Camera could not be started</strong>Check camera permission, HTTPS and whether another application is using the camera.','error');console.error(error)}}
+keepImage.addEventListener('change',()=>{if(!keepImage.checked){snapshotWrap.hidden=true;snapshot.removeAttribute('src')}});button.addEventListener('click',async()=>running?(await stop(),message('<strong>Camera stopped</strong>Press Read Code to try again.')):start());window.addEventListener('pagehide',()=>{if(running)stop()});renderHistory();
+</script></body></html>
