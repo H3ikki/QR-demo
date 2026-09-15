@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>QR Code Reader</title>
+<style>
+:root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#172033;background:#f4f7fb}*{box-sizing:border-box}body{min-height:100svh;margin:0;display:grid;place-items:center;padding:clamp(12px,4vw,28px)}main{width:min(100%,680px);padding:clamp(18px,4vw,34px);background:#fff;border:1px solid #dce3ee;border-radius:20px;box-shadow:0 16px 40px #1c2a421a}h1{margin:0 0 8px;font-size:clamp(1.6rem,5vw,2.2rem);text-align:center}.intro{margin:0 0 22px;color:#58657a;text-align:center}button{width:100%;min-height:50px;border:0;border-radius:12px;padding:12px 18px;background:#1769e0;color:#fff;font:inherit;font-weight:700;cursor:pointer}button:hover{background:#0f57bd}button:focus-visible{outline:3px solid #8ab8ff;outline-offset:3px}button:disabled{opacity:.65;cursor:wait}.camera{position:relative;margin-top:20px;overflow:hidden;border-radius:14px;background:#080b10;aspect-ratio:4/3}.camera[hidden]{display:none}.camera video{width:100%;height:100%;display:block;object-fit:cover}.guide{position:absolute;inset:50% auto auto 50%;width:min(62%,280px);aspect-ratio:1;transform:translate(-50%,-50%);border:3px solid #fff;border-radius:14px;box-shadow:0 0 0 999px #0005;pointer-events:none}.message{margin-top:20px;padding:16px;border-radius:12px;background:#edf3fc;overflow-wrap:anywhere}.message strong{display:block;margin-bottom:6px}.success{background:#e5f7eb;color:#14532d}.error{background:#fdeaea;color:#8b1e1e}@media(prefers-color-scheme:dark){:root{color:#edf3ff;background:#101622}main{background:#182131;border-color:#303d52}.intro{color:#b9c4d7}.message{background:#253147}.success{background:#163b27;color:#baf3cc}.error{background:#482326;color:#ffd0d0}}
+</style>
+</head>
+<body>
+<main>
+<h1>QR Code Reader</h1>
+<p class="intro">Press the button and point the camera at a QR code.</p>
+<button id="action" type="button">Read QR Code</button>
+<div id="camera" class="camera" hidden><video id="video" playsinline muted></video><div class="guide" aria-hidden="true"></div></div>
+<div id="message" class="message" role="status" aria-live="polite">Camera has not been started.</div>
+</main>
+<script>
+const button=document.querySelector('#action'),camera=document.querySelector('#camera'),video=document.querySelector('#video'),message=document.querySelector('#message');
+let stream=null,running=false,frameId=0,detector=null,busy=false;
+function show(title,text,type=''){message.className=('message '+type).trim();message.replaceChildren();const strong=document.createElement('strong'),span=document.createElement('span');strong.textContent=title;span.textContent=text;message.append(strong,span)}
+function stop(){running=false;cancelAnimationFrame(frameId);if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}video.srcObject=null;camera.hidden=true;button.disabled=false;button.textContent='Read QR Code'}
+async function scan(){if(!running)return;if(!busy&&video.readyState>=2){busy=true;try{const codes=await detector.detect(video);if(codes.length){const value=codes[0].rawValue;stop();show('QR code read successfully',value,'success');return}}catch(e){console.warn(e)}finally{busy=false}}frameId=requestAnimationFrame(scan)}
+async function start(){
+ if(!window.isSecureContext){show('Secure connection required','Open this page from an HTTPS website or from localhost. Opening the HTML file directly is not sufficient for camera access.','error');return}
+ if(!navigator.mediaDevices?.getUserMedia){show('Camera unavailable','This browser does not provide camera access to this page.','error');return}
+ if(!('BarcodeDetector' in window)){show('Scanner unavailable','This browser does not support the built-in QR reader. Use a current Chrome or Edge browser, or use a version with an embedded QR library.','error');return}
+ button.disabled=true;button.textContent='Starting camera...';show('Starting camera','Allow camera access when the browser asks.');
+ try{
+  const supported=await BarcodeDetector.getSupportedFormats();
+  if(!supported.includes('qr_code'))throw new Error('QR format is not supported');
+  detector=new BarcodeDetector({formats:['qr_code']});
+  stream=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}}});
+  video.srcObject=stream;await video.play();running=true;camera.hidden=false;button.disabled=false;button.textContent='Stop camera';show('Camera is active','Point the camera at a QR code.');scan();
+ }catch(e){stop();show('Camera could not be started','Check browser support, camera permission, HTTPS, and whether another application is using the camera.','error');console.error(e)}
+}
+button.addEventListener('click',()=>{if(running){stop();show('Camera stopped','Press Read QR Code to try again.')}else start()});
+window.addEventListener('pagehide',stop);
+</script>
+</body>
+</html>
