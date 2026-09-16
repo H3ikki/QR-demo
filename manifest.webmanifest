@@ -1,0 +1,10 @@
+{
+  "name": "Offline QR and Barcode Scanner POC",
+  "short_name": "Offline Scanner",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0d1420",
+  "theme_color": "#0d1420",
+  "description": "Offline-first QR and barcode scanner proof of concept"
+}
